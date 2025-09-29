@@ -44,6 +44,7 @@
                     <div class="record-vitals">
                         <div><span>Heart Rate</span>{{ $record->heart_rate }} bpm</div>
                         <div><span>Blood Pressure</span>{{ $record->systolic_pressure }}/{{ $record->diastolic_pressure }} mmHg</div>
+                        <div><span>Cholesterol</span>{{ $record->cholesterol ?? 'N/A' }} mg/dL</div>
                         <div><span>Blood Sugar</span>{{ $record->blood_sugar_value }} {{ $record->blood_sugar_unit }}</div>
                     </div>
                     <div class="record-footer">

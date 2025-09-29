@@ -29,9 +29,18 @@
                     <li><span class="range-danger">Danger Zone:</span> Below 70 or Above 180</li>
                 </ul>
             </div>
+            <div class="metric-guide">
+                <h5>Total Cholesterol (mg/dL)</h5>
+                <ul>
+                    <li><span class="range-normal">Normal:</span> Below 200</li>
+                    <li><span class="range-elevated">Borderline:</span> 200 - 239</li>
+                    <li><span class="range-danger">High:</span> 240 or Above</li>
+                </ul>
+            </div>
         </div>
         <p class="disclaimer">*These are general guidelines for adults. Consult your doctor for personalized medical advice.</p>
     </div>
+
     <div class="card">
         <form action="{{ route('patient.checkup.store') }}" method="POST">
             @csrf
@@ -46,6 +55,11 @@
                     <input type="number" name="systolic_pressure" class="form-control" required placeholder="Systolic, e.g., 120">
                     <input type="number" name="diastolic_pressure" class="form-control" required placeholder="Diastolic, e.g., 80">
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label for="cholesterol" class="form-label">Total Cholesterol (mg/dL)</label>
+                <input type="number" id="cholesterol" name="cholesterol" class="form-control" placeholder="e.g., 190 (optional)">
             </div>
 
             <div class="form-group">
@@ -71,6 +85,7 @@
                     @endforeach
                 </div>
             </div>
+
              <div class="form-group">
                 <label for="notes" class="form-label">Additional Notes (optional)</label>
                 <textarea id="notes" name="notes" rows="4" class="form-control"></textarea>

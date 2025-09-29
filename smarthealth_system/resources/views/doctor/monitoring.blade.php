@@ -32,6 +32,7 @@
 
                 // 2. Check if vitals are critical based on hardcoded rules
                 $vitalsAreCritical = (
+                    $latestRecord->cholesterol > 240 || 
                     $latestRecord->blood_sugar_value > 200 ||
                     $latestRecord->systolic_pressure > 180 ||
                     $latestRecord->heart_rate > 120 ||
@@ -52,6 +53,7 @@
             <td>{{ $latestRecord ? $latestRecord->created_at->diffForHumans() : 'No data' }}</td>
             <td>{{ $latestRecord?->heart_rate ?? 'N/A' }} bpm</td>
             <td>{{ $latestRecord ? $latestRecord->systolic_pressure . ' / ' . $latestRecord->diastolic_pressure : 'N/A' }} mmHg</td>
+            <td>{{ $latestRecord?->cholesterol ?? 'N/A' }} mg/dL</td>
             <td>{{ $latestRecord ? $latestRecord->blood_sugar_value . ' ' . $latestRecord->blood_sugar_unit : 'N/A' }}</td>
             <td>
                 <a href="{{ route('doctor.patient.show', $patient->id) }}" class="btn btn-secondary">View Details</a>

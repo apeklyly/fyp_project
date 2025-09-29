@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Appointment;
 
 class User extends Authenticatable
 {
@@ -63,4 +64,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class, 'receiver_id');
     }
+
+     // ADD THIS NEW METHOD
+   public function appointments()
+{
+    // Tell Laravel the foreign key on the appointments table is 'patient_id'
+    return $this->hasMany(Appointment::class, 'patient_id');
+}
 }

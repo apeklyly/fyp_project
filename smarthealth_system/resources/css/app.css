@@ -590,3 +590,92 @@ body {
 .stat-card.critical p {
     color: #DC2626;
 }
+
+/* ========================================= */
+/* PATIENT DASHBOARD STYLES                  */
+/* ========================================= */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+}
+
+.stat-card h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.stat-card p {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+}
+.stat-card p span {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.chart-container {
+    grid-column: 1 / -1; /* Make chart span full width */
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+.chart-container canvas {
+    flex-grow: 1;
+}
+
+.appointment-details p {
+    margin: 0.5rem 0;
+}
+
+.actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.actions-list a {
+    text-align: center;
+    position: relative;
+}
+.action-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #EF4444;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}

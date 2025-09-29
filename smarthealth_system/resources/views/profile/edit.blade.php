@@ -39,26 +39,5 @@
         </form>
     </div>
 
-    <!-- Update Password Form -->
-    <div class="card">
-        <h2>Update Password</h2>
-        <form method="POST" action="{{ route('profile.update') }}">
-            @csrf
-            @method('patch')
-
-             <div class="form-group">
-                <label for="password" class="form-label">New Password</label>
-                <input id="password" name="password" type="password" class="form-control" autocomplete="new-password">
-            </div>
-             <div class="form-group">
-                <label for="password_confirmation" class="form-label">Confirm Password</label>
-                <input id="password_confirmation" name="password_confirmation" type="password" class="form-control" autocomplete="new-password">
-            </div>
-
-            <div style="display:flex; gap: 1rem;">
-                <button type="submit" class="btn btn-primary">Update Password</button>
-                <a href="{{ route('profile.show') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
-    </div>
+    
 </x-app-layout>
