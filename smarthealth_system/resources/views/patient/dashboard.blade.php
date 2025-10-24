@@ -17,10 +17,24 @@
             <h4><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM184,104a8,8,0,0,1-8,8H152v24a8,8,0,0,1-16,0V112H112a8,8,0,0,1,0-16h24V72a8,8,0,0,1,16,0V96h24A8,8,0,0,1,184,104Z"></path></svg> Blood Sugar</h4>
             <p>{{ $latestRecord->blood_sugar_value ?? 'N/A' }} <span>{{ $latestRecord->blood_sugar_unit ?? '' }}</span></p>
         </div>
+        <div class="stat-card">
+            <h4><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M232,88A16,16,0,0,0,216,72H175.62A87.81,87.81,0,0,0,135.85,35a16,16,0,0,0-26,21.14A87.81,87.81,0,0,0,80.38,72H40A16,16,0,0,0,24,88v0a16,16,0,0,0,14.4,15.91,88.08,88.08,0,0,0,30.51,60.85,87.8,87.8,0,0,0-10.36,44.79A16,16,0,0,0,74.5,224h107a16,16,0,0,0,15.95-14.45,87.8,87.8,0,0,0-10.36-44.79,88.08,88.08,0,0,0,30.51-60.85A16,16,0,0,0,232,88Z"></path></svg> Cholesterol</h4>
+            <p>{{ $latestRecord->cholesterol ?? 'N/A' }} <span>mg/dL</span></p>
+        </div>
 
         <div class="card chart-container">
-            <h3>Health Trends Heart Rate (Last 30 Days)</h3>
-            <canvas id="healthChart"></canvas>
+            <h3>Blood Pressure Trend (Last 30 Days)</h3>
+            <canvas id="bpChart"></canvas>
+        </div>
+        
+        <div class="card chart-container">
+            <h3>Blood Sugar Trend (Last 30 Days)</h3>
+            <canvas id="sugarChart"></canvas>
+        </div>
+
+        <div class="card chart-container">
+            <h3>Cholesterol Trend (Last 30 Days)</h3>
+            <canvas id="cholesterolChart"></canvas>
         </div>
 
         <div class="card">
@@ -59,43 +73,48 @@
             
             if (records.length > 0) {
                 const dates = records.map(record => new Date(record.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-                
-                // --- THIS IS THE MAIN CHANGE ---
-                // We now get heart_rate instead of blood pressure
-                const heartRateData = records.map(record => record.heart_rate);
 
-                const ctx = document.getElementById('healthChart').getContext('2d');
-                new Chart(ctx, {
+                // Data for Blood Pressure Chart
+                const systolicData = records.map(record => record.systolic_pressure);
+                const diastolicData = records.map(record => record.diastolic_pressure);
+                const bpCtx = document.getElementById('bpChart').getContext('2d');
+                new Chart(bpCtx, {
                     type: 'line',
                     data: {
                         labels: dates,
-                        // The datasets array is now updated for Heart Rate
                         datasets: [
-                            {
-                                label: 'Heart Rate (bpm)',
-                                data: heartRateData,
-                                borderColor: '#34D399',
-                                backgroundColor: '#34D399',
-                                tension: 0.1,
-                                borderWidth: 2,
-                            }
+                            { label: 'Systolic', data: systolicData, borderColor: '#111827', tension: 0.1, borderWidth: 2 },
+                            { label: 'Diastolic', data: diastolicData, borderColor: '#34D399', tension: 0.1, borderWidth: 2 }
                         ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: false,
-                                suggestedMin: 50, // Set a reasonable minimum for heart rate
-                                suggestedMax: 110 // Set a reasonable maximum
-                            }
-                        }
-                    }
+                    }, options: { responsive: true, maintainAspectRatio: false }
                 });
+
+                // Data for Blood Sugar Chart
+                const bloodSugarData = records.map(record => record.blood_sugar_value);
+                const sugarCtx = document.getElementById('sugarChart').getContext('2d');
+                new Chart(sugarCtx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{ label: 'Blood Sugar (mg/dL)', data: bloodSugarData, borderColor: '#FBBF24', tension: 0.1, borderWidth: 2 }]
+                    }, options: { responsive: true, maintainAspectRatio: false }
+                });
+
+                // Data for Cholesterol Chart
+                const cholesterolData = records.map(record => record.cholesterol);
+                const cholesterolCtx = document.getElementById('cholesterolChart').getContext('2d');
+                new Chart(cholesterolCtx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{ label: 'Cholesterol (mg/dL)', data: cholesterolData, borderColor: '#3B82F6', tension: 0.1, borderWidth: 2 }]
+                    }, options: { responsive: true, maintainAspectRatio: false }
+                });
+
             } else {
-                const chartContainer = document.querySelector('.chart-container');
-                chartContainer.innerHTML = '<h3>Health Trends (Last 30 Days)</h3><p>No recent health data available to display a trend. Submit a new checkup to get started!</p>';
+                document.querySelectorAll('.chart-container').forEach(container => {
+                    container.innerHTML = '<h3>Health Trend</h3><p>No recent health data available to display a trend.</p>';
+                });
             }
         });
     </script>

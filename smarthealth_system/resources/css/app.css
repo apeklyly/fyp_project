@@ -679,3 +679,132 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ========================================= */
+/* FILTER FORM STYLES                        */
+/* ========================================= */
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+.filter-group {
+    display: flex;
+    gap: 0.5rem;
+}
+.filter-group input[type="text"] {
+    min-width: 300px;
+}
+
+/* ========================================= */
+/* MONITORING TABLE STATUS STYLES            */
+/* ========================================= */
+.status-row-danger {
+    background-color: #FEF2F2; /* Light Red */
+    border-left: 5px solid #EF4444; /* Red */
+}
+.status-row-intermediate {
+    background-color: #FFFBEB; /* Light Yellow */
+    border-left: 5px solid #FBBF24; /* Yellow */
+}
+
+.status-text-danger {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #DC2626; /* Dark Red */
+    text-transform: uppercase;
+}
+.status-text-intermediate {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #B45309; /* Dark Yellow */
+    text-transform: uppercase;
+}
+
+/* ========================================= */
+/* MODERN CHAT MESSAGE STYLES                */
+/* ========================================= */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* This creates the space between bubbles */
+
+    /* NEW: Add a background to the container */
+    background-color: #f4f7f6; /* Light gray page background */
+    padding: 1.5rem;
+    border-radius: 12px;
+}
+
+.chat-bubble {
+    background-color: #ffffff; /* White bubble */
+    border: 1px solid #000000;
+    border-radius: 12px;
+    
+    /* NEW: A slightly stronger shadow for a "pop" effect */
+    box-shadow: 0 4px 10px -2px rgb(0 0 0 / 0.08); 
+    
+    max-width: 75%;
+    align-self: flex-start; /* All messages from doctor are on the left */
+    
+    /* NEW: Remove margin, as the container gap handles spacing */
+    margin: 0; 
+}
+
+.chat-sender {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #111827;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.chat-content {
+    padding: 1.25rem;
+    line-height: 1.6;
+}
+
+.chat-content p {
+    margin: 0;
+}
+
+.chat-timestamp {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-align: right;
+    padding: 0 1.25rem 0.75rem;
+}
+
+/* Attachment Styles inside the bubble */
+.attachment-image {
+    margin-top: 1rem;
+}
+.attachment-image img {
+    max-width: 100%; /* Make image responsive to bubble size */
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+}
+
+.attachment-file {
+    margin-top: 1rem;
+}
+.attachment-file a {
+    display: flex; 
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background-color: #f4f7f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    color: #111827;
+    transition: background-color 0.2s;
+}
+.attachment-file a:hover {
+    background-color: #e5e7eb;
+}

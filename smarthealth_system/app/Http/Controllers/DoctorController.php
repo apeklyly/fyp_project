@@ -60,11 +60,21 @@ class DoctorController extends Controller
         ));
     }
 
-    public function monitoring()
-    {
-        $patients = User::where('role', 'patient')->with('healthRecords')->paginate(15);
-        return view('doctor.monitoring', compact('patients'));
+    public function monitoring(Request $request)
+{
+    // Start the query for users with the 'patient' role
+    $query = User::where('role', 'patient');
+
+    // If there is a search term in the URL, filter the results
+    if ($request->filled('search')) {
+        $query->where('full_name', 'LIKE', '%' . $request->search . '%');
     }
+
+    // Get the paginated results and load the health records for each patient
+    $patients = $query->with('healthRecords')->paginate(15);
+
+    return view('doctor.monitoring', compact('patients'));
+}
 
     public function showPatient(User $user)
     {
@@ -76,18 +86,30 @@ class DoctorController extends Controller
         return view('doctor.patient-show', compact('user', 'records'));
     }
 
-    public function sendMessage(Request $request, User $user)
-    {
-        $request->validate(['message' => 'required|string']);
+   public function sendMessage(Request $request, User $user)
+{
+    $request->validate([
+        // Make text message optional if an attachment is present
+        'message' => 'nullable|string|required_without:attachment',
+        // Add validation for the file
+        'attachment' => 'nullable|file|mimes:jpg,png,jpeg,gif,pdf|max:5120', // 5MB Max
+    ]);
 
-        Message::create([
-            'sender_id' => Auth::id(),
-            'receiver_id' => $user->id,
-            'message' => $request->message,
-        ]);
-
-        return back()->with('success', 'Message sent successfully!');
+    $filePath = null;
+    if ($request->hasFile('attachment')) {
+        // Store the file in `storage/app/public/message_attachments`
+        $filePath = $request->file('attachment')->store('message_attachments', 'public');
     }
+
+    Message::create([
+        'sender_id' => Auth::id(),
+        'receiver_id' => $user->id,
+        'message' => $request->message,
+        'file_path' => $filePath, // 3. Save the path to the database
+    ]);
+
+    return redirect()->route('doctor.patient.show', $user->id)->with('success', 'Message sent successfully!');
+}
 
     public function createMessage(User $user)
     {

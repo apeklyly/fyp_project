@@ -9,7 +9,6 @@
     @endif
 
     @php
-        // Decode the JSON recommendation from the database
         $aiData = json_decode($record->recommendation, true);
     @endphp
 
@@ -39,13 +38,15 @@
                 </div>
 
                 <div class="metrics-grid">
-                    @foreach($aiData['metrics'] ?? [] as $metric)
+                    @forelse($aiData['metrics'] ?? [] as $metric)
                         <div class="metric-card status-{{ Str::slug($metric['status'] ?? 'default') }}">
                             <h5>{{ $metric['name'] }}</h5>
                             <div class="metric-value">{{ $metric['value'] }}</div>
                             <div class="metric-status">{{ $metric['status'] }}</div>
                         </div>
-                    @endforeach
+                    @empty
+                        <p>Metric details could not be generated for this record.</p>
+                    @endforelse
                 </div>
 
                 <div class="advice-section">
@@ -61,7 +62,9 @@
                         <h5>Suggested Resources</h5>
                         <ul>
                              @foreach($aiData['resource_links'] ?? [] as $link)
-                                <li><a href="{{ $link['url'] }}" target="_blank">{{ $link['title'] }}</a></li>
+                                @if(isset($link['url']) && isset($link['title']))
+                                    <li><a href="{{ $link['url'] }}" target="_blank">{{ $link['title'] }}</a></li>
+                                @endif
                             @endforeach
                         </ul>
                     </div>
@@ -70,6 +73,6 @@
         @endif
 
         <hr style="margin: 2rem 0;">
-        <button onclick="window.print()" class="btn btn-secondary">Print this Record</button>
+        <a href="{{ route('patient.record.print', $record->id) }}" target="_blank" class="btn btn-secondary">Print this Record</a>
     </div>
 </x-app-layout>

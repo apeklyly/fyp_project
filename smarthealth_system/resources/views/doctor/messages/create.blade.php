@@ -5,11 +5,17 @@
     </div>
 
     <div class="card">
-        <form action="{{ route('doctor.patient.sendMessage', $user->id) }}" method="POST">
+        <form action="{{ route('doctor.patient.sendMessage', $user->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label for="message" class="form-label">Message Content</label>
-                <textarea id="message" name="message" class="form-control" rows="8" placeholder="Type your advice or message here..." required></textarea>
+                <textarea id="message" name="message" class="form-control" rows="4" placeholder="Type your advice or message here..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="attachment" class="form-label">Attach File (Optional)</label>
+                <input type="file" id="attachment" name="attachment" class="form-control">
+                <small class="form-text">Allowed types: jpg, png, pdf. Max 5MB.</small>
             </div>
 
             <div style="display:flex; gap: 1rem;">

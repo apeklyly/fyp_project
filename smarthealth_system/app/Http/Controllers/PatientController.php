@@ -11,7 +11,7 @@ use App\Models\Appointment;
 
 class PatientController extends Controller
 {
-    public function dashboard()
+   public function dashboard()
 {
     $user = Auth::user();
 
@@ -28,11 +28,11 @@ class PatientController extends Controller
                                 ->orderBy('appointment_date', 'asc')
                                 ->first();
 
-    // Get the last 30 days of records for the health trend chart
+    // Get the last 30 days of records for ALL THREE charts
     $healthRecordsForChart = $user->healthRecords()
                                   ->where('created_at', '>=', now()->subDays(30))
                                   ->orderBy('created_at', 'asc')
-                                  ->select('created_at', 'systolic_pressure', 'diastolic_pressure', 'heart_rate', 'blood_sugar_value')
+                                  ->select('created_at', 'systolic_pressure', 'diastolic_pressure', 'heart_rate', 'blood_sugar_value', 'cholesterol')
                                   ->get();
 
     return view('patient.dashboard', compact(
@@ -90,10 +90,7 @@ class PatientController extends Controller
 
     private function generateAiRecommendation($heartRate, $systolic, $diastolic, $cholesterol, $bloodSugarVal, $bloodSugarUnit, $symptoms, $notes)
 {
-    // CORRECTED: Use the config() helper to get the key
     $apiKey = config('services.gemini.key');
-
-    // The dd() line has been removed.
     
     if (!$apiKey) {
         return json_encode(['error' => 'AI service is not configured. Please check your services config file.']);
@@ -103,6 +100,7 @@ class PatientController extends Controller
 
     $symptomsString = implode(', ', $symptoms);
 
+    // CHANGED: The prompt now asks for a 'search_query' instead of a 'url'
     $prompt = "
     ### ROLE AND GOAL
     You are a health data analysis AI. Your task is to process user-submitted health data and return a structured JSON object. DO NOT output any text outside of the JSON object.
@@ -117,15 +115,15 @@ class PatientController extends Controller
     - `key_advice`: An array of short, simple, actionable advice strings. Each string should be under 15 words.
     - `resource_links`: An array of objects for helpful resources.
       - `title`: A short title for the link.
-      - `url`: A real, working URL from YouTube or Reddit.
+      - `search_query`: A short, relevant Google search term (e.g., 'DASH diet recipes for high blood pressure').
 
     ### CURRENT USER DATA TO ANALYZE
-- Heart Rate: $heartRate bpm
-- Blood Pressure: $systolic / $diastolic mmHg
-- Total Cholesterol: $cholesterol mg/dL
-- Blood Sugar: $bloodSugarVal $bloodSugarUnit
-- Reported Symptoms: $symptomsString
-- User Notes: $notes
+    - Heart Rate: $heartRate bpm
+    - Blood Pressure: $systolic / $diastolic mmHg
+    - Total Cholesterol: $cholesterol mg/dL
+    - Blood Sugar: $bloodSugarVal $bloodSugarUnit
+    - Reported Symptoms: $symptomsString
+    - User Notes: $notes
 
     Now, generate the JSON response.
     ";
@@ -136,7 +134,22 @@ class PatientController extends Controller
         ]);
 
         if ($response->successful() && !empty($response->json('candidates'))) {
-            return $response->json('candidates.0.content.parts.0.text');
+            $aiContent = $response->json('candidates.0.content.parts.0.text');
+            
+            // NEW: Process the AI response to build the Google search links
+            $data = json_decode($aiContent, true);
+
+            if (isset($data['resource_links'])) {
+                foreach ($data['resource_links'] as &$link) { // Use a reference to modify the array
+                    if (isset($link['search_query'])) {
+                        $link['url'] = 'https://www.google.com/search?q=' . urlencode($link['search_query']);
+                    }
+                }
+            }
+            
+            // Return the modified data as a JSON string
+            return json_encode($data);
+
         } else {
             return json_encode(['error' => 'The AI API returned an invalid response: ' . $response->body()]);
         }
@@ -171,4 +184,15 @@ class PatientController extends Controller
 
         return view('patient.messages', compact('messages'));
     }
+
+public function showPrintableView(HealthRecord $record)
+{
+    // Security check: ensure the logged-in user owns this record
+    if ($record->user_id !== Auth::id()) {
+        abort(403);
+    }
+
+    // Return the new print-specific view
+    return view('patient.record-print', compact('record'));
+}
 }
