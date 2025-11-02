@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 class DoctorAppointmentController extends Controller
 {
     public function index()
@@ -23,7 +24,13 @@ class DoctorAppointmentController extends Controller
 
         $request->validate(['status' => 'required|in:Approved,Cancelled,Completed']);
 
-        $appointment->update(['status' => $request->status]);
+        // Store the new status
+        $newStatus = $request->status;
+
+     
+
+        // Now, update the appointment status
+        $appointment->update(['status' => $newStatus]);
 
         return back()->with('success', 'Appointment status updated!');
     }

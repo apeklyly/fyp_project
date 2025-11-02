@@ -32,11 +32,13 @@
             </div>
         @else
             <div class="health-dashboard">
+                <!-- Overall Status -->
                 <div class="overall-status status-{{ Str::slug($aiData['overall_status'] ?? 'default') }}">
                     <h4>Overall Health Indicator</h4>
                     <p>{{ $aiData['overall_status'] ?? 'N/A' }}</p>
                 </div>
 
+                <!-- Individual Metrics Grid -->
                 <div class="metrics-grid">
                     @forelse($aiData['metrics'] ?? [] as $metric)
                         <div class="metric-card status-{{ Str::slug($metric['status'] ?? 'default') }}">
@@ -49,6 +51,7 @@
                     @endforelse
                 </div>
 
+                <!-- Key Advice & Resources -->
                 <div class="advice-section">
                     <div class="key-advice">
                         <h5>Key Advice</h5>
@@ -73,6 +76,6 @@
         @endif
 
         <hr style="margin: 2rem 0;">
-        <a href="{{ route('patient.record.print', $record->id) }}" target="_blank" class="btn btn-secondary">Print this Record</a>
+        <button onclick="window.print()" class="btn btn-secondary">Print this Record</button>
     </div>
 </x-app-layout>

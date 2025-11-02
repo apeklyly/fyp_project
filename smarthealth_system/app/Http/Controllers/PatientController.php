@@ -8,40 +8,38 @@ use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use App\Models\Appointment;
+use App\Models\Message;
 
 class PatientController extends Controller
 {
-   public function dashboard()
-{
-    $user = Auth::user();
+  public function dashboard()
+    {
+        $user = Auth::user(); // <-- 2. CORRECTED (::)
+        $latestRecord = $user->healthRecords()->latest()->first(); // <-- 3. CORRECTED ($user)
 
-    // Get the single latest record for the stat cards
-    $latestRecord = $user->healthRecords()->latest()->first();
+        $unreadMessagesCount = Message::where('receiver_id', $user->id)
+                                    ->whereNull('read_at')
+                                    ->count();
 
-    // Get the count of unread messages
-    $unreadMessagesCount = $user->receivedMessages()->whereNull('read_at')->count();
+        $upcomingAppointment = $user->appointments()
+                                 ->where('status', 'Approved')
+                                 ->where('appointment_date', '>=', now())
+                                 ->orderBy('appointment_date', 'asc')
+                                 ->first();
+        
+        $healthRecordsForChart = $user->healthRecords()
+                                 ->where('created_at', '>=', now()->subDays(30))
+                                 ->orderBy('created_at', 'asc')
+                                 ->select('created_at', 'systolic_pressure', 'diastolic_pressure', 'heart_rate', 'blood_sugar_value', 'cholesterol')
+                                 ->get();
 
-    // Find the next upcoming 'Approved' appointment
-    $upcomingAppointment = $user->appointments()
-                                ->where('status', 'Approved')
-                                ->where('appointment_date', '>=', now())
-                                ->orderBy('appointment_date', 'asc')
-                                ->first();
-
-    // Get the last 30 days of records for ALL THREE charts
-    $healthRecordsForChart = $user->healthRecords()
-                                  ->where('created_at', '>=', now()->subDays(30))
-                                  ->orderBy('created_at', 'asc')
-                                  ->select('created_at', 'systolic_pressure', 'diastolic_pressure', 'heart_rate', 'blood_sugar_value', 'cholesterol')
-                                  ->get();
-
-    return view('patient.dashboard', compact(
-        'latestRecord',
-        'unreadMessagesCount',
-        'upcomingAppointment',
-        'healthRecordsForChart'
-    ));
-}
+        return view('patient.dashboard', compact(
+            'latestRecord',
+            'unreadMessagesCount',
+            'upcomingAppointment',
+            'healthRecordsForChart'
+        ));
+    }
 
     public function createCheckup()
     {
@@ -88,7 +86,7 @@ class PatientController extends Controller
         return redirect()->route('patient.record.show', $record->id)->with('success', 'Your health data has been successfully submitted and is now available for your doctor to review.');
     }
 
-    private function generateAiRecommendation($heartRate, $systolic, $diastolic, $cholesterol, $bloodSugarVal, $bloodSugarUnit, $symptoms, $notes)
+   private function generateAiRecommendation($heartRate, $systolic, $diastolic, $cholesterol, $bloodSugarVal, $bloodSugarUnit, $symptoms, $notes)
 {
     $apiKey = config('services.gemini.key');
     
@@ -100,7 +98,7 @@ class PatientController extends Controller
 
     $symptomsString = implode(', ', $symptoms);
 
-    // CHANGED: The prompt now asks for a 'search_query' instead of a 'url'
+    // ================== REVERTED TO THE SIMPLER PROMPT ==================
     $prompt = "
     ### ROLE AND GOAL
     You are a health data analysis AI. Your task is to process user-submitted health data and return a structured JSON object. DO NOT output any text outside of the JSON object.
@@ -127,6 +125,7 @@ class PatientController extends Controller
 
     Now, generate the JSON response.
     ";
+    // ================== END OF PROMPT ==================
 
     try {
         $response = Http::post($url, [
@@ -136,11 +135,11 @@ class PatientController extends Controller
         if ($response->successful() && !empty($response->json('candidates'))) {
             $aiContent = $response->json('candidates.0.content.parts.0.text');
             
-            // NEW: Process the AI response to build the Google search links
+            // Process the AI response to build the Google search links
             $data = json_decode($aiContent, true);
 
             if (isset($data['resource_links'])) {
-                foreach ($data['resource_links'] as &$link) { // Use a reference to modify the array
+                foreach ($data['resource_links'] as &$link) { 
                     if (isset($link['search_query'])) {
                         $link['url'] = 'https://www.google.com/search?q=' . urlencode($link['search_query']);
                     }
@@ -195,4 +194,7 @@ public function showPrintableView(HealthRecord $record)
     // Return the new print-specific view
     return view('patient.record-print', compact('record'));
 }
+
+
+
 }

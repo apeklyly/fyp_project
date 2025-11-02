@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use App\Models\Message;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Message; // <-- Add this line
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -22,15 +22,23 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Using a closure based composer...
+        // This code will run every time 'layouts.app' is loaded
         View::composer('layouts.app', function ($view) {
-            if (Auth::check() && Auth::user()->role === 'patient') {
-                $unreadMessagesCount = Message::where('receiver_id', Auth::id())
-                    ->whereNull('read_at')
-                    ->count();
+            
+            // Check if a user is logged in
+            if (Auth::check()) {
+                $user = Auth::user();
+                
+                // Get the count of unread messages for the logged-in user
+                $unreadMessagesCount = Message::where('receiver_id', $user->id)
+                                              ->whereNull('read_at')
+                                              ->count();
+
+                // Share this variable with the view
                 $view->with('unreadMessagesCount', $unreadMessagesCount);
             } else {
-                $view->with('unreadMessagesCount', 0); // Default for doctors or guests
+                // Set a default for logged-out pages
+                $view->with('unreadMessagesCount', 0);
             }
         });
     }

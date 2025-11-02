@@ -58,9 +58,10 @@
                         <td>{{ $latestRecord ? $latestRecord->systolic_pressure . ' / ' . $latestRecord->diastolic_pressure : 'N/A' }} mmHg</td>
                         <td>{{ $latestRecord?->cholesterol ?? 'N/A' }} mg/dL</td>
                         <td>{{ $latestRecord ? $latestRecord->blood_sugar_value . ' ' . $latestRecord->blood_sugar_unit : 'N/A' }}</td>
-                        <td>
-                            <a href="{{ route('doctor.patient.show', $patient->id) }}" class="btn btn-secondary">View Details</a>
-                        </td>
+                        <td class="action-cell">
+    <a href="{{ route('doctor.patient.show', $patient->id) }}" class="btn btn-secondary">View Details</a>
+    <a href="{{ route('doctor.messages.show', $patient->id) }}" class="btn btn-primary">Message</a>
+</td>
                     </tr>
                 @empty
                     <tr>

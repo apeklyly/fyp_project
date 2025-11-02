@@ -2,28 +2,26 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Appointment;
 
-class User extends Authenticatable
+class User extends Authenticatable 
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
-    protected $fillable = [
-        'username',
+   protected $fillable = [
         'full_name',
+        'username',
         'email',
-        'birth_date',
-        'phone_number',
+        'birth_date', // <-- ADDED
+        'phone_number', // <-- ADDED
         'password',
         'role',
     ];
@@ -31,7 +29,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -41,23 +39,28 @@ class User extends Authenticatable
     /**
      * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            // 'birth_date' cast removed
         ];
     }
+
+    // Relationships
     public function healthRecords()
     {
         return $this->hasMany(HealthRecord::class);
     }
 
-    public function sentMessages()
+   public function appointments()
     {
-        return $this->hasMany(Message::class, 'sender_id');
+        // Tell Laravel that the foreign key on the
+        // appointments table is 'patient_id', not 'user_id'
+        return $this->hasMany(Appointment::class, 'patient_id');
     }
 
     public function receivedMessages()
@@ -65,10 +68,13 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'receiver_id');
     }
 
-     // ADD THIS NEW METHOD
-   public function appointments()
-{
-    // Tell Laravel the foreign key on the appointments table is 'patient_id'
-    return $this->hasMany(Appointment::class, 'patient_id');
-}
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

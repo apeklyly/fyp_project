@@ -1,89 +1,136 @@
-/* General Body and Theme */
+/* ========================================= */
+/* COLOR & THEME VARIABLES                   */
+/* ========================================= */
+:root {
+    --bg-primary: #f4f7f6;
+    --bg-secondary: #ffffff;
+    --bg-sidebar: #1F2937;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-sidebar-primary: #D1D5DB;
+    --text-sidebar-hover: #ffffff;
+    --border-primary: #e5e7eb;
+    --border-sidebar: #374151; /* Border *in* the sidebar */
+    --form-input-bg: #ffffff;
+    --form-input-border: #D1D5DB;
+    --form-input-text: #111827;
+    --table-header-bg: #f9fafb;
+}
+
+body.dark {
+    --bg-primary: #121212;
+    --bg-secondary: #1E1E1E;
+    --bg-sidebar: #1F2937; /* Sidebar stays the same dark */
+    --text-primary: #E5E7EB;
+    --text-secondary: #9CA3AF;
+    --text-sidebar-primary: #D1D5DB;
+    --text-sidebar-hover: #ffffff;
+    --border-primary: #374151;
+    --border-sidebar: #374151;
+    --form-input-bg: #374151;
+    --form-input-border: #4B5563;
+    --form-input-text: #E5E7EB;
+    --table-header-bg: #1F2937;
+}
+
+/* Base body styling */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f4f7f6;
-    color: #1a1a1a;
     margin: 0;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
 }
 
 /* Main Layout */
 .main-layout {
     display: flex;
-    min-height: 100vh;
 }
 
 /* Sidebar */
 .sidebar {
-    width: 260px;
-    background-color: #111827; /* Dark Gray */
-    color: #ffffff;
-    padding: 2rem 1rem;
+    width: 280px; /* Standardized width */
+    height: 100vh;
+    background-color: var(--bg-sidebar);
+    color: var(--text-sidebar-primary);
     display: flex;
     flex-direction: column;
-    position: fixed;
-    height: 100%;
+    position: sticky; /* Sticky, not fixed */
+    top: 0;
 }
 
 .sidebar-header {
-    font-size: 1.5rem;
-    font-weight: bold;
+    padding: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: 700;
     text-align: center;
-    margin-bottom: 2rem;
-    color: #34D399; /* Green Accent */
+    color: var(--text-sidebar-hover);
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    padding: 1rem;
 }
 
 .sidebar-nav a {
     display: block;
-    color: #D1D5DB; /* Light Gray */
+    color: var(--text-sidebar-primary);
     text-decoration: none;
     padding: 0.9rem 1.2rem;
     margin: 0.3rem 0;
     border-radius: 8px;
     transition: background-color 0.3s, color 0.3s;
     font-size: 1rem;
+    position: relative; /* For the notification badge */
 }
 
-.sidebar-nav a:hover, .sidebar-nav a.active {
-    background-color: #374151; /* Medium Gray */
-    color: #ffffff;
+.sidebar-nav a:hover {
+    background-color: var(--border-sidebar);
+    color: var(--text-sidebar-hover);
+}
+
+.sidebar-nav a.active {
+    background-color: var(--border-sidebar);
+    color: var(--text-sidebar-hover);
+    font-weight: 600;
 }
 
 .sidebar-footer {
-    margin-top: auto;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-sidebar);
 }
 
 /* Main Content Area */
 .content {
-    margin-left: 260px; /* Same as sidebar width */
     flex-grow: 1;
     padding: 2.5rem;
-    background-color: #ffffff;
+    max-width: 1200px; /* Add a max-width for readability */
+    margin: 0 auto;
 }
 
 .content-header {
     margin-bottom: 2rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-primary);
     padding-bottom: 1.5rem;
 }
 
 .content-header h1 {
     font-size: 2rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--text-primary);
 }
 
 .content-header p {
-    color: #6b7280;
+    color: var(--text-secondary);
     margin-top: 0.5rem;
 }
 
 /* Containers and Cards */
 .card {
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
     border-radius: 12px;
     padding: 2rem;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
     margin-bottom: 2rem;
 }
 
@@ -96,22 +143,29 @@ body {
     display: block;
     font-weight: 600;
     margin-bottom: 0.5rem;
-    color: #374151;
+    color: var(--text-primary);
 }
 
 .form-control, .form-select {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--form-input-border);
+    background-color: var(--form-input-bg);
+    color: var(--form-input-text);
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box; /* Ensures padding doesn't break width */
 }
 
 .form-control:focus, .form-select:focus {
     outline: none;
     border-color: #34D399;
     box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.3);
+}
+
+textarea.form-control {
+    min-height: 120px;
 }
 
 .form-checkbox-group {
@@ -146,7 +200,6 @@ body {
     background-color: #111827;
     color: #ffffff;
 }
-
 .btn-primary:hover {
     background-color: #1f2937;
     transform: translateY(-2px);
@@ -160,6 +213,11 @@ body {
     background-color: #10B981;
 }
 
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
 /* Tables */
 .table {
     width: 100%;
@@ -169,74 +227,31 @@ body {
 .table th, .table td {
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-primary);
 }
 
 .table th {
-    background-color: #f9fafb;
+    background-color: var(--table-header-bg);
     font-weight: 600;
-    color: #374151;
+    color: var(--text-primary);
 }
 
-/* Alerts and Notifications */
+/* Alerts and Notifications (Specific colors, no dark mode) */
 .alert {
     padding: 1rem;
     border-radius: 8px;
     margin-bottom: 1.5rem;
     color: #ffffff;
 }
-
-.alert-danger {
-    background-color: #EF4444;
-}
-
-.alert-success {
-    background-color: #22C55E;
-}
-
-.alert-info {
-    background-color: #3B82F6;
-}
-
+.alert-danger { background-color: #EF4444; }
+.alert-success { background-color: #22C55E; }
+.alert-info { background-color: #3B82F6; }
 .alert-caution {
-    background-color: #FEF9C3; /* Light Yellow */
-    color: #A16207; /* Dark Yellow */
+    background-color: #FEF9C3;
+    color: #A16207;
 }
 .alert-caution h4, .alert-caution svg {
     color: #A16207;
-}
-
-/* Auth Pages (Login/Register) */
-.auth-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f4f7f6;
-}
-.auth-card {
-    width: 100%;
-    max-width: 450px;
-    background-color: #111827; /* Changed to dark gray */
-    padding: 3rem;
-    border-radius: 12px;
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-}
-.auth-card h2 {
-    text-align: center;
-    font-size: 1.8rem;
-    color: #ffffff; /* Changed to white */
-    margin-bottom: 2rem;
-}
-.auth-card .form-label {
-    color: #D1D5DB; /* Light gray */
-}
-.auth-card a {
-    color: #34D399;
-    text-decoration: none;
-}
-.auth-card a:hover {
-    text-decoration: underline;
 }
 
 /* Print Specific Styles */
@@ -256,13 +271,14 @@ body {
 }
 
 /* ========================================= */
-/* NOTIFICATION BADGE STYLES                 */
+/* SIDEBAR NOTIFICATION BADGE                */
 /* ========================================= */
 .notification-badge {
     position: absolute;
-    top: 12px;
-    right: 15px;
-    background-color: #EF4444; /* Red */
+    top: 50%;
+    right: 1.2rem; /* Position it on the right side */
+    transform: translateY(-50%); /* Center it vertically */
+    background-color: #EF4444; /* Red color */
     color: #ffffff;
     border-radius: 50%;
     width: 22px;
@@ -272,10 +288,9 @@ body {
     justify-content: center;
     font-size: 0.75rem;
     font-weight: bold;
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
-/* APPOINTMENT STATUS STYLES */
+/* APPOINTMENT STATUS STYLES (Specific colors) */
 .status-pending { background-color: #FBBF24; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; }
 .status-approved { background-color: #22C55E; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; }
 .status-cancelled { background-color: #EF4444; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; }
@@ -290,6 +305,7 @@ body {
     gap: 1rem;
     background-color: #EFF6FF; /* Light Blue */
     border-left: 5px solid #3B82F6; /* Blue Accent */
+    color: #1D4ED8; /* Medium Blue */
 }
 .appointment-instructions svg {
     flex-shrink: 0;
@@ -304,17 +320,13 @@ body {
     font-weight: 600;
     color: #1E40AF; /* Dark Blue */
 }
-.appointment-instructions p {
-    margin: 0;
-    color: #1D4ED8; /* Medium Blue */
-    line-height: 1.6;
-}
+.appointment-instructions p { margin: 0; line-height: 1.6; }
 
 /* ========================================= */
 /* REFERENCE GUIDE STYLES                    */
 /* ========================================= */
 .reference-guide-card {
-    background-color: #f9fafb;
+    background-color: var(--table-header-bg); /* Use var */
     border-left: 5px solid #34D399;
 }
 .reference-guide-card h4 {
@@ -334,7 +346,7 @@ body {
     margin-bottom: 0.75rem;
     font-size: 1rem;
     font-weight: 600;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-primary); /* Use var */
     padding-bottom: 0.5rem;
 }
 .metric-guide ul {
@@ -343,220 +355,73 @@ body {
     list-style: none;
     font-size: 0.9rem;
 }
-.metric-guide li {
-    margin-bottom: 0.5rem;
-}
+.metric-guide li { margin-bottom: 0.5rem; }
 .disclaimer {
     font-size: 0.8rem;
-    color: #6b7280;
+    color: var(--text-secondary); /* Use var */
     text-align: center;
     margin-top: 1.5rem;
     margin-bottom: -1rem;
 }
+/* Specific colors */
 .range-normal { color: #16a34a; font-weight: 600; }
 .range-elevated { color: #f59e0b; font-weight: 600; }
 .range-danger { color: #dc2626; font-weight: 600; }
 
 /* ========================================= */
-/* AI HEALTH DASHBOARD STYLES                */
+/* AI HEALTH DASHBOARD STYLES (Specific colors) */
 /* ========================================= */
 .health-dashboard {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
-.overall-status {
-    padding: 1.5rem;
-    border-radius: 12px;
-    text-align: center;
-    border: 2px solid;
-}
-.overall-status h4 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-.overall-status p {
-    margin: 0;
-    font-size: 1.75rem;
-    font-weight: 700;
-}
-.metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1.5rem;
-}
-.metric-card {
-    padding: 1.5rem;
-    border-radius: 12px;
-    text-align: center;
-    border: 2px solid;
-}
-.metric-card h5 {
-    margin: 0 0 0.5rem 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-.metric-card .metric-value {
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1.2;
-}
-.metric-card .metric-status {
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    margin-top: 0.5rem;
-    opacity: 0.8;
-}
-/* Status Colors */
+.overall-status { padding: 1.5rem; border-radius: 12px; text-align: center; border: 2px solid; }
+.overall-status h4 { margin: 0 0 0.5rem 0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+.overall-status p { margin: 0; font-size: 1.75rem; font-weight: 700; }
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; }
+.metric-card { padding: 1.5rem; border-radius: 12px; text-align: center; border: 2px solid; }
+.metric-card h5 { margin: 0 0 0.5rem 0; font-size: 0.9rem; font-weight: 600; }
+.metric-card .metric-value { font-size: 2rem; font-weight: 700; line-height: 1.2; }
+.metric-card .metric-status { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; margin-top: 0.5rem; opacity: 0.8; }
 .status-good, .status-normal { border-color: #22C55E; background-color: #F0FDF4; color: #15803D; }
 .status-monitoring-advised, .status-elevated { border-color: #FBBF24; background-color: #FFFBEB; color: #B45309; }
 .status-high-concern, .status-high, .status-low { border-color: #F87171; background-color: #FEF2F2; color: #B91C1C; }
-
-.advice-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-.key-advice ul, .resource-links ul {
-    list-style: disc;
-    padding-left: 1.5rem;
-    margin-top: 0.5rem;
-    margin-bottom: 0;
-}
-.key-advice li, .resource-links li {
-    margin-bottom: 0.5rem;
-}
+.advice-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+.key-advice ul, .resource-links ul { list-style: disc; padding-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0; }
+.key-advice li, .resource-links li { margin-bottom: 0.5rem; }
 .key-advice h5, .resource-links h5 { font-size: 1.1rem; margin-bottom: 0.5rem; }
 
-/* PROFILE VIEW STYLES */
-.profile-details {
-    display: grid;
-    gap: 1.5rem;
-}
-.detail-item {
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e5e7eb;
-}
-.detail-label {
-    font-size: 0.8rem;
-    color: #6b7280;
-    margin-bottom: 0.25rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.detail-value {
-    font-size: 1.1rem;
-    color: #111827;
-    font-weight: 500;
-}
+/* ========================================= */
+/* PROFILE VIEW STYLES                       */
+/* ========================================= */
+.profile-details { display: grid; gap: 1.5rem; }
+.detail-item { display: flex; flex-direction: column; padding-bottom: 1rem; border-bottom: 1px solid var(--border-primary); }
+.detail-label { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.detail-value { font-size: 1.1rem; color: var(--text-primary); font-weight: 500; }
 
 /* ========================================= */
 /* DOCTOR PATIENT DETAILS PAGE STYLES        */
 /* ========================================= */
-.patient-info-column, .health-records-column {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.records-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.record-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    background-color: #f9fafb;
-}
-
-.record-header {
-    padding: 0.75rem 1rem;
-    background-color: #f9fafb;
-    border-bottom: 1px solid #e5e7eb;
-    border-radius: 8px 8px 0 0;
-    font-size: 0.9rem;
-}
-
-.record-vitals {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-    padding: 1rem;
-    font-size: 1.2rem;
-    font-weight: 600;
-}
-
-.record-vitals div {
-    display: flex;
-    flex-direction: column;
-}
-
-.record-vitals span {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #6b7280;
-    margin-bottom: 0.25rem;
-}
-
-.record-footer {
-    padding: 0.75rem 1rem;
-    text-align: right;
-}
-
-.btn-sm {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    /* THIS IS WHERE THE MISSING BRACE WAS */
-}
+.patient-info-column, .health-records-column { display: flex; flex-direction: column; gap: 2rem; }
+.records-list { display: flex; flex-direction: column; gap: 1.5rem; }
+.record-card { border: 1px solid var(--border-primary); border-radius: 8px; background-color: var(--table-header-bg); }
+.record-header { padding: 0.75rem 1rem; background-color: var(--table-header-bg); border-bottom: 1px solid var(--border-primary); border-radius: 8px 8px 0 0; font-size: 0.9rem; }
+.record-vitals { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; padding: 1rem; font-size: 1.2rem; font-weight: 600; }
+.record-vitals div { display: flex; flex-direction: column; }
+.record-vitals span { font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 0.25rem; }
+.record-footer { padding: 0.75rem 1rem; text-align: right; }
 
 /* ========================================= */
 /* CUSTOM PAGINATION STYLES                  */
 /* ========================================= */
-.pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.page-item .page-link {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    background-color: #fff;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    color: #111827;
-    text-decoration: none;
-    transition: all 0.2s ease-in-out;
-}
-
-.page-item a.page-link:hover {
-    background-color: #f4f7f6;
-    border-color: #34D399;
-}
-
-.page-item.disabled .page-link {
-    background-color: #f9fafb;
-    color: #9ca3af;
-    cursor: not-allowed;
-    border-color: #e5e7eb;
-}
+.pagination { display: flex; justify-content: space-between; align-items: center; list-style: none; padding: 0; margin: 0; }
+.page-item .page-link { display: inline-block; padding: 0.5rem 1rem; background-color: var(--bg-secondary); border: 1px solid var(--form-input-border); border-radius: 8px; color: var(--text-primary); text-decoration: none; transition: all 0.2s ease-in-out; }
+.page-item a.page-link:hover { background-color: var(--bg-primary); border-color: #34D399; }
+.page-item.disabled .page-link { background-color: var(--table-header-bg); color: var(--text-secondary); cursor: not-allowed; border-color: var(--border-primary); }
 
 /* ========================================= */
-/* DOCTOR DASHBOARD STYLES                   */
+/* DOCTOR & PATIENT DASHBOARD STYLES         */
 /* ========================================= */
 .dashboard-grid {
     display: grid;
@@ -564,94 +429,41 @@ body {
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
-
 .stat-card {
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
 }
-
 .stat-card h4 {
     margin: 0 0 0.5rem 0;
     font-size: 1rem;
-    color: #6b7280;
+    color: var(--text-secondary);
     font-weight: 500;
 }
-
 .stat-card p {
     margin: 0;
     font-size: 2.5rem;
     font-weight: 700;
-    color: #111827;
-}
-
-.stat-card.critical p {
-    color: #DC2626;
-}
-
-/* ========================================= */
-/* PATIENT DASHBOARD STYLES                  */
-/* ========================================= */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-}
-
-.stat-card {
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
-}
-
-.stat-card h4 {
-    margin: 0 0 0.5rem 0;
-    font-size: 0.9rem;
-    color: #6b7280;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-.stat-card p {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #111827;
+    color: var(--text-primary);
 }
 .stat-card p span {
     font-size: 1rem;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--text-secondary);
 }
-
+.stat-card.critical p { color: #DC2626; }
 .chart-container {
-    grid-column: 1 / -1; /* Make chart span full width */
+    grid-column: 1 / -1;
     height: 400px;
     display: flex;
     flex-direction: column;
 }
-.chart-container canvas {
-    flex-grow: 1;
-}
-
-.appointment-details p {
-    margin: 0.5rem 0;
-}
-
-.actions-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-.actions-list a {
-    text-align: center;
-    position: relative;
-}
+.chart-container canvas { flex-grow: 1; }
+.appointment-details p { margin: 0.5rem 0; }
+.actions-list { display: flex; flex-direction: column; gap: 1rem; }
+.actions-list a { text-align: center; position: relative; }
 .action-badge {
     position: absolute;
     top: -8px;
@@ -668,143 +480,239 @@ body {
     justify-content: center;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-@media (max-width: 768px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
 /* ========================================= */
 /* FILTER FORM STYLES                        */
 /* ========================================= */
-.filter-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
-}
-.filter-group {
-    display: flex;
-    gap: 0.5rem;
-}
-.filter-group input[type="text"] {
-    min-width: 300px;
-}
+.filter-form { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+.filter-group { display: flex; gap: 0.5rem; }
+.filter-group input[type="text"] { min-width: 300px; }
 
 /* ========================================= */
-/* MONITORING TABLE STATUS STYLES            */
+/* MONITORING TABLE STATUS STYLES (Specific) */
 /* ========================================= */
-.status-row-danger {
-    background-color: #FEF2F2; /* Light Red */
-    border-left: 5px solid #EF4444; /* Red */
-}
-.status-row-intermediate {
-    background-color: #FFFBEB; /* Light Yellow */
-    border-left: 5px solid #FBBF24; /* Yellow */
-}
-
-.status-text-danger {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #DC2626; /* Dark Red */
-    text-transform: uppercase;
-}
-.status-text-intermediate {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #B45309; /* Dark Yellow */
-    text-transform: uppercase;
-}
+.status-row-danger { background-color: #FEF2F2; border-left: 5px solid #EF4444; }
+.status-row-intermediate { background-color: #FFFBEB; border-left: 5px solid #FBBF24; }
+.status-text-danger { display: block; font-size: 0.8rem; font-weight: bold; color: #DC2626; text-transform: uppercase; }
+.status-text-intermediate { display: block; font-size: 0.8rem; font-weight: bold; color: #B45309; text-transform: uppercase; }
 
 /* ========================================= */
-/* MODERN CHAT MESSAGE STYLES                */
+/* MODERN CHAT MESSAGE STYLES (v2)           */
 /* ========================================= */
 .chat-container {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; /* This creates the space between bubbles */
-
-    /* NEW: Add a background to the container */
-    background-color: #f4f7f6; /* Light gray page background */
+    gap: 1rem;
+    background-color: var(--bg-primary); /* Use var */
     padding: 1.5rem;
     border-radius: 12px;
+    height: 75vh;
+    overflow-y: auto;
+    padding-bottom: 100px;
+}
+.chat-bubble {
+    border: 1px solid var(--border-primary); /* Use var */
+    box-shadow: 0 4px 10px -2px rgb(0 0 0 / 0.05);
+    max-width: 70%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.chat-bubble-empty { text-align: center; color: var(--text-secondary); padding: 2rem; }
+
+/* Incoming messages */
+.chat-bubble.incoming {
+    background-color: var(--bg-secondary); /* Use var */
+    align-self: flex-start;
+    border-radius: 18px 18px 18px 4px;
+}
+.chat-bubble.incoming::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: -10px;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 0 0, transparent 0, transparent 10px, var(--bg-secondary) 10px); /* Use var */
+    transform: rotate(180deg) scaleY(-1);
 }
 
-.chat-bubble {
-    background-color: #ffffff; /* White bubble */
-    border: 1px solid #000000;
-    border-radius: 12px;
-    
-    /* NEW: A slightly stronger shadow for a "pop" effect */
-    box-shadow: 0 4px 10px -2px rgb(0 0 0 / 0.08); 
-    
-    max-width: 75%;
-    align-self: flex-start; /* All messages from doctor are on the left */
-    
-    /* NEW: Remove margin, as the container gap handles spacing */
-    margin: 0; 
+/* Outgoing messages */
+.chat-bubble.outgoing {
+    background-color: #DCF8C6; /* Specific color */
+    align-self: flex-end;
+    border: 1px solid #c7e9b0;
+    border-radius: 18px 18px 4px 18px;
+}
+.chat-bubble.outgoing::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 100% 0, transparent 0, transparent 10px, #DCF8C6 10px);
+    transform: rotate(0deg) scaleY(-1);
+}
+.chat-bubble.outgoing::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    right: -13px;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 100% 0, transparent 0, transparent 10px, #c7e9b0 10px);
+    transform: rotate(0deg) scaleY(-1);
+    z-index: -1;
 }
 
 .chat-sender {
     font-size: 0.9rem;
     font-weight: 600;
-    color: #111827;
-    padding: 0.75rem 1.25rem;
-    border-bottom: 1px solid #e5e7eb;
+    padding: 0.75rem 1.25rem 0.25rem;
+    color: #3B82F6; /* Specific color */
 }
+.chat-bubble.outgoing .chat-sender { color: #059669; } /* Specific color */
+.chat-content { padding: 0.25rem 1.25rem 0.5rem; line-height: 1.6; word-wrap: break-word; }
+.chat-content p { margin: 0; }
+.chat-timestamp { font-size: 0.75rem; color: var(--text-secondary); text-align: right; padding: 0 1.25rem 0.75rem; }
 
-.chat-content {
-    padding: 1.25rem;
-    line-height: 1.6;
-}
-
-.chat-content p {
-    margin: 0;
-}
-
-.chat-timestamp {
-    font-size: 0.75rem;
-    color: #6b7280;
-    text-align: right;
-    padding: 0 1.25rem 0.75rem;
-}
-
-/* Attachment Styles inside the bubble */
-.attachment-image {
-    margin-top: 1rem;
-}
-.attachment-image img {
-    max-width: 100%; /* Make image responsive to bubble size */
-    height: auto;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-    cursor: pointer;
-}
-
-.attachment-file {
-    margin-top: 1rem;
-}
+/* Attachments */
+.attachment-image { margin: 0.5rem 1rem; }
+.attachment-image img { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border-primary); cursor: pointer; }
+.attachment-file { margin: 0.5rem 1rem; }
 .attachment-file a {
     display: flex; 
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.25rem;
-    background-color: #f4f7f6;
-    border: 1px solid #e5e7eb;
+    background-color: var(--table-header-bg); /* Use var */
+    border: 1px solid var(--border-primary); /* Use var */
     border-radius: 8px;
     text-decoration: none;
     font-weight: 500;
-    color: #111827;
+    color: var(--text-primary); /* Use var */
     transition: background-color 0.2s;
 }
-.attachment-file a:hover {
-    background-color: #e5e7eb;
+.chat-bubble.outgoing .attachment-file a { background-color: #c7e9b0; } /* Specific */
+.attachment-file a:hover { background-color: var(--border-primary); } /* Use var */
+
+/* ========================================= */
+/* NEW CHAT REPLY FORM STYLES                */
+/* ========================================= */
+.chat-reply-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    padding: 1rem;
+    background-color: var(--bg-secondary); /* Use var */
+    border-top: 1px solid var(--border-primary); /* Use var */
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.chat-reply-form textarea {
+    flex-grow: 1;
+    border: 1px solid var(--form-input-border); /* Use var */
+    background-color: var(--form-input-bg); /* Use var */
+    color: var(--form-input-text); /* Use var */
+    border-radius: 20px;
+    padding: 0.6rem 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    resize: none;
+    max-height: 120px;
+}
+.chat-reply-form textarea:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 1px #3B82F6;
+}
+.chat-reply-form button,
+.chat-reply-form .chat-attachment-btn {
+    flex-shrink: 0;
+    height: 44px;
+    width: 44px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.chat-attachment-btn {
+    background-color: var(--bg-primary); /* Use var */
+    color: var(--text-secondary); /* Use var */
+}
+.chat-attachment-btn:hover {
+    background-color: var(--border-primary); /* Use var */
+}
+.chat-send-btn { background-color: #10B981; color: #ffffff; } /* Specific */
+.chat-send-btn:hover { background-color: #059669; } /* Specific */
+
+/* ========================================= */
+/* TABLE ACTION CELL                         */
+/* ========================================= */
+.action-cell {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* ========================================= */
+/* THEME TOGGLE SWITCH                       */
+/* ========================================= */
+.theme-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+}
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-sidebar-primary);
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+.theme-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+.theme-toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.theme-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #4B5563;
+    transition: .4s;
+    border-radius: 24px;
+}
+.theme-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+input:checked + .theme-toggle-slider {
+    background-color: #10B981;
+}
+input:checked + .theme-toggle-slider:before {
+    transform: translateX(20px);
 }

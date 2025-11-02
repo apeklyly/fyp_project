@@ -7,6 +7,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\PatientAppointmentController;
 use App\Http\Controllers\DoctorAppointmentController;
+use App\Http\Controllers\MessageController;
 
 // Welcome Page
 Route::get('/', function () {
@@ -14,7 +15,7 @@ Route::get('/', function () {
 });
 
 // Main Authenticated Routes
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     
     // Redirects users to their specific dashboard after login
     Route::get('/dashboard', function () {
@@ -28,17 +29,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    
 
 });
 
 // Patient-Specific Routes
-Route::middleware(['auth', 'verified', 'role:patient'])->prefix('patient')->name('patient.')->group(function () {
+Route::middleware(['auth', 'role:patient'])->prefix('patient')->name('patient.')->group(function () {
     Route::get('/dashboard', [PatientController::class, 'dashboard'])->name('dashboard');
     Route::get('/checkup', [PatientController::class, 'createCheckup'])->name('checkup.create');
     Route::post('/checkup', [PatientController::class, 'storeCheckup'])->name('checkup.store');
     Route::get('/records', [PatientController::class, 'records'])->name('records');
     Route::get('/records/{record}', [PatientController::class, 'showRecord'])->name('record.show');
-    Route::get('/messages', [PatientController::class, 'messages'])->name('messages');
+    Route::get('/messages', [MessageController::class, 'patientIndex'])->name('messages.index');
+    Route::get('/messages/{doctor}', [MessageController::class, 'patientShow'])->name('messages.show');
+    Route::post('/messages/{doctor}', [MessageController::class, 'patientStore'])->name('messages.store');
     
     // Appointments
     Route::get('/appointments', [PatientAppointmentController::class, 'index'])->name('appointments.index');
@@ -50,15 +54,16 @@ Route::middleware(['auth', 'verified', 'role:patient'])->prefix('patient')->name
 });
 
 // Doctor-Specific Routes
-Route::middleware(['auth', 'verified', 'role:doctor'])->prefix('doctor')->name('doctor.')->group(function () {
+Route::middleware(['auth', 'role:doctor'])->prefix('doctor')->name('doctor.')->group(function () {
     Route::get('/dashboard', [DoctorController::class, 'dashboard'])->name('dashboard');
     Route::get('/monitoring', [DoctorController::class, 'monitoring'])->name('monitoring');
     Route::get('/patient/{user}', [DoctorController::class, 'showPatient'])->name('patient.show');
     Route::get('/patient-record/{record}', [DoctorController::class, 'showPatientRecord'])->name('record.show');
 
     // Messaging
-    Route::get('/patient/{user}/message', [DoctorController::class, 'createMessage'])->name('patient.message.create');
-    Route::post('/patient/{user}/message', [DoctorController::class, 'sendMessage'])->name('patient.sendMessage');
+   Route::get('/messages', [MessageController::class, 'doctorIndex'])->name('messages.index');
+    Route::get('/messages/{patient}', [MessageController::class, 'doctorShow'])->name('messages.show');
+    Route::post('/messages/{patient}', [MessageController::class, 'doctorStore'])->name('messages.store');
     
     // Appointments
     Route::get('/appointments', [DoctorAppointmentController::class, 'index'])->name('appointments.index');

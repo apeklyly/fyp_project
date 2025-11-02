@@ -52,18 +52,18 @@
         </div>
 
         <div class="card">
-            <h3>Quick Actions</h3>
-            <div class="actions-list">
-                <a href="{{ route('patient.checkup.create') }}" class="btn btn-primary">Submit New Health Data</a>
-                <a href="{{ route('patient.messages') }}" class="btn btn-secondary">
-                    View Messages 
-                    @if($unreadMessagesCount > 0)
-                        <span class="action-badge">{{ $unreadMessagesCount }}</span>
-                    @endif
-                </a>
-            </div>
-        </div>
+    <h3>Quick Actions</h3>
+    <div class="actions-list">
+        <a href="{{ route('patient.checkup.create') }}" class="btn btn-primary">Submit New Health Data</a>
+        
+        <a href="{{ route('patient.messages.index') }}" class="btn btn-secondary">
+            View Messages 
+            @if($unreadMessagesCount > 0)
+                <span class="action-badge">{{ $unreadMessagesCount }}</span>
+            @endif
+        </a>
     </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
