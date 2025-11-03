@@ -12,10 +12,10 @@ use App\Models\Message;
 
 class PatientController extends Controller
 {
-  public function dashboard()
+public function dashboard()
     {
-        $user = Auth::user(); // <-- 2. CORRECTED (::)
-        $latestRecord = $user->healthRecords()->latest()->first(); // <-- 3. CORRECTED ($user)
+        $user = Auth::user();
+        $latestRecord = $user->healthRecords()->latest()->first();
 
         $unreadMessagesCount = Message::where('receiver_id', $user->id)
                                     ->whereNull('read_at')
@@ -27,17 +27,47 @@ class PatientController extends Controller
                                  ->orderBy('appointment_date', 'asc')
                                  ->first();
         
-        $healthRecordsForChart = $user->healthRecords()
-                                 ->where('created_at', '>=', now()->subDays(30))
-                                 ->orderBy('created_at', 'asc')
-                                 ->select('created_at', 'systolic_pressure', 'diastolic_pressure', 'heart_rate', 'blood_sugar_value', 'cholesterol')
-                                 ->get();
+        // --- START OF NEW CHART LOGIC ---
+        
+        // 1. Get all records needed
+        $healthRecords = $user->healthRecords()
+                             ->where('created_at', '>=', now()->subDays(30))
+                             ->orderBy('created_at', 'asc')
+                             ->select('created_at', 'systolic_pressure', 'diastolic_pressure', 'blood_sugar_value', 'cholesterol')
+                             ->get();
+        
+        // 2. Create the labels (same for all charts)
+        $chartLabels = $healthRecords->map(function($record) {
+            return $record->created_at->format('M d');
+        });
+        
+        // 3. Process MAP Data
+        $mapData = $healthRecords->map(function($record) {
+            $systolic = $record->systolic_pressure;
+            $diastolic = $record->diastolic_pressure;
+            $map = $diastolic + (($systolic - $diastolic) / 3);
+            return round($map, 1);
+        });
+
+        // 4. Process Blood Sugar Data
+        $bloodSugarData = $healthRecords->map(function($record) {
+            return $record->blood_sugar_value;
+        });
+
+        // 5. Process Cholesterol Data
+        $cholesterolData = $healthRecords->map(function($record) {
+            return $record->cholesterol;
+        });
+        // --- END OF NEW CHART LOGIC ---
 
         return view('patient.dashboard', compact(
             'latestRecord',
             'unreadMessagesCount',
             'upcomingAppointment',
-            'healthRecordsForChart'
+            'chartLabels',      // Send all new data to the view
+            'mapData',
+            'bloodSugarData',
+            'cholesterolData'
         ));
     }
 

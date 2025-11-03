@@ -23,19 +23,19 @@
         </div>
 
         <div class="card chart-container">
-            <h3>Blood Pressure Trend (Last 30 Days)</h3>
+            <h3>Mean Pressure Trend (Last 30 Days)</h3>
             <canvas id="bpChart"></canvas>
         </div>
         
-        <div class="card chart-container">
-            <h3>Blood Sugar Trend (Last 30 Days)</h3>
-            <canvas id="sugarChart"></canvas>
-        </div>
+       <div class="card chart-container">
+    <h3>Blood Sugar Trend (Last 30 Days)</h3>
+    <canvas id="bloodSugarChart"></canvas>
+</div>
 
         <div class="card chart-container">
-            <h3>Cholesterol Trend (Last 30 Days)</h3>
-            <canvas id="cholesterolChart"></canvas>
-        </div>
+    <h3>Cholesterol Trend (Last 30 Days)</h3>
+    <canvas id="cholesterolChart"></canvas>
+</div>
 
         <div class="card">
             <h3>Upcoming Appointment</h3>
@@ -68,54 +68,105 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const records = @json($healthRecordsForChart);
-            
-            if (records.length > 0) {
-                const dates = records.map(record => new Date(record.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+document.addEventListener('DOMContentLoaded', function () {
+    // --- Data from Controller ---
+    const chartLabels = @json($chartLabels);
+    const mapData = @json($mapData);
+    const bloodSugarData = @json($bloodSugarData);
+    const cholesterolData = @json($cholesterolData);
 
-                // Data for Blood Pressure Chart
-                const systolicData = records.map(record => record.systolic_pressure);
-                const diastolicData = records.map(record => record.diastolic_pressure);
-                const bpCtx = document.getElementById('bpChart').getContext('2d');
-                new Chart(bpCtx, {
-                    type: 'line',
-                    data: {
-                        labels: dates,
-                        datasets: [
-                            { label: 'Systolic', data: systolicData, borderColor: '#111827', tension: 0.1, borderWidth: 2 },
-                            { label: 'Diastolic', data: diastolicData, borderColor: '#34D399', tension: 0.1, borderWidth: 2 }
-                        ]
-                    }, options: { responsive: true, maintainAspectRatio: false }
-                });
-
-                // Data for Blood Sugar Chart
-                const bloodSugarData = records.map(record => record.blood_sugar_value);
-                const sugarCtx = document.getElementById('sugarChart').getContext('2d');
-                new Chart(sugarCtx, {
-                    type: 'line',
-                    data: {
-                        labels: dates,
-                        datasets: [{ label: 'Blood Sugar (mg/dL)', data: bloodSugarData, borderColor: '#FBBF24', tension: 0.1, borderWidth: 2 }]
-                    }, options: { responsive: true, maintainAspectRatio: false }
-                });
-
-                // Data for Cholesterol Chart
-                const cholesterolData = records.map(record => record.cholesterol);
-                const cholesterolCtx = document.getElementById('cholesterolChart').getContext('2d');
-                new Chart(cholesterolCtx, {
-                    type: 'line',
-                    data: {
-                        labels: dates,
-                        datasets: [{ label: 'Cholesterol (mg/dL)', data: cholesterolData, borderColor: '#3B82F6', tension: 0.1, borderWidth: 2 }]
-                    }, options: { responsive: true, maintainAspectRatio: false }
-                });
-
-            } else {
-                document.querySelectorAll('.chart-container').forEach(container => {
-                    container.innerHTML = '<h3>Health Trend</h3><p>No recent health data available to display a trend.</p>';
-                });
+    // --- 1. BP (MAP) Chart ---
+    const mapCtx = document.getElementById('bpChart');
+    if (mapCtx && chartLabels.length > 0) {
+        new Chart(mapCtx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Mean Arterial Pressure (MAP)',
+                    data: mapData,
+                    borderColor: '#34D399',
+                    backgroundColor: 'rgba(52, 211, 153, 0.1)',
+                    fill: true,
+                    tension: 0.1,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: false, title: { display: true, text: 'Pressure (mmHg)' } } },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: { label: (context) => ` MAP: ${context.raw} mmHg` }
+                    }
+                }
             }
         });
-    </script>
+    }
+
+    // --- 2. Blood Sugar Chart ---
+    const sugarCtx = document.getElementById('bloodSugarChart');
+    if (sugarCtx && chartLabels.length > 0) {
+        new Chart(sugarCtx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Blood Sugar',
+                    data: bloodSugarData,
+                    borderColor: '#FBBF24', // Yellow
+                    backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                    fill: true,
+                    tension: 0.1,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: false, title: { display: true, text: 'mg/dL' } } },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: { label: (context) => ` Blood Sugar: ${context.raw} mg/dL` }
+                    }
+                }
+            }
+        });
+    }
+
+    // --- 3. Cholesterol Chart ---
+    const cholCtx = document.getElementById('cholesterolChart');
+    if (cholCtx && chartLabels.length > 0) {
+        new Chart(cholCtx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Cholesterol',
+                    data: cholesterolData,
+                    borderColor: '#EF4444', // Red
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    fill: true,
+                    tension: 0.1,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: false, title: { display: true, text: 'mg/dL' } } },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: { label: (context) => ` Cholesterol: ${context.raw} mg/dL` }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
 </x-app-layout>

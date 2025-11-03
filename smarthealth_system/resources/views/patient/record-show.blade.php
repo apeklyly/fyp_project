@@ -76,6 +76,6 @@
         @endif
 
         <hr style="margin: 2rem 0;">
-        <button onclick="window.print()" class="btn btn-secondary">Print this Record</button>
+        <button onclick="window.print()" class="btn btn-secondary no-print">Print this Record</button>
     </div>
 </x-app-layout>

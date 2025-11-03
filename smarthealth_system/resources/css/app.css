@@ -716,3 +716,70 @@ input:checked + .theme-toggle-slider {
 input:checked + .theme-toggle-slider:before {
     transform: translateX(20px);
 }
+
+/* ========================================= */
+/* PROFESSIONAL PRINT STYLES                 */
+/* ========================================= */
+@media print {
+    /* Hide all UI elements */
+    .sidebar, .content-header, .no-print, .alert-caution {
+        display: none !important;
+    }
+
+    /* Reset the main layout for printing */
+    .main-layout {
+        display: block; /* Stop it from being a flex container */
+    }
+    .content {
+        margin-left: 0;
+        padding: 0;
+        max-width: 100%;
+    }
+
+    /* Force a light theme and remove document styles */
+    body, .card, .health-dashboard {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    /* Add a professional header to the printed page */
+    .card::before {
+        content: "SmartHealth - Confidential Medical Record";
+        font-size: 1.5rem;
+        font-weight: 600;
+        display: block;
+        text-align: center;
+        margin-bottom: 2.5rem;
+        border-bottom: 2px solid #000;
+        padding-bottom: 1rem;
+    }
+    
+    /* Make sure AI status borders are still visible */
+    .status-good, .status-normal { 
+        border-color: #22C55E !important; 
+        background-color: #ffffff !important; 
+        color: #15803D !important;
+    }
+    .status-monitoring-advised, .status-elevated { 
+        border-color: #FBBF24 !important; 
+        background-color: #ffffff !important; 
+        color: #B45309 !important;
+    }
+    .status-high-concern, .status-high, .status-low { 
+        border-color: #F87171 !important; 
+        background-color: #ffffff !important; 
+        color: #B91C1C !important;
+    }
+
+    /* Ensure table colors are readable */
+    .table th, .table td {
+        border-bottom: 1px solid #e5e7eb !important;
+        color: #000000 !important;
+    }
+    .table th {
+        background-color: #f9fafb !important;
+    }
+}

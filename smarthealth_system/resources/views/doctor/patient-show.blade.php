@@ -9,10 +9,12 @@
     @endif
 
     <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <h2>Patient Summary</h2>
-            <a href="{{ route('doctor.patient.message.create', $user->id) }}" class="btn btn-primary">Send Message</a>
-        </div>
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2>Patient Summary</h2>
+    <a href="{{ route('doctor.messages.show', $user->id) }}" class="btn btn-primary">
+        Send Message
+    </a>
+</div>
         <div class="profile-details">
             <div class="detail-item">
                 <span class="detail-label">Full Name</span>
