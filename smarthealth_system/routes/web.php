@@ -59,6 +59,8 @@ Route::middleware(['auth', 'role:doctor'])->prefix('doctor')->name('doctor.')->g
     Route::get('/monitoring', [DoctorController::class, 'monitoring'])->name('monitoring');
     Route::get('/patient/{user}', [DoctorController::class, 'showPatient'])->name('patient.show');
     Route::get('/patient-record/{record}', [DoctorController::class, 'showPatientRecord'])->name('record.show');
+    Route::get('/guidelines', [DoctorController::class, 'editGuidelines'])->name('guidelines.edit');
+    Route::post('/guidelines', [DoctorController::class, 'updateGuidelines'])->name('guidelines.update');
 
     // Messaging
    Route::get('/messages', [MessageController::class, 'doctorIndex'])->name('messages.index');

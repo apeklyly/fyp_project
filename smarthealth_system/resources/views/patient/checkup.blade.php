@@ -5,41 +5,41 @@
     </div>
 
     <div class="card reference-guide-card">
-        <h4>Health Metrics Reference Guide</h4>
-        <div class="guide-grid">
-            <div class="metric-guide">
-                <h5>Heart Rate (Resting)</h5>
-                <ul>
-                    <li><span class="range-normal">Normal:</span> 60 - 100 bpm</li>
-                    <li><span class="range-danger">Danger Zone:</span> Below 60 or Above 100 bpm</li>
-                </ul>
-            </div>
-            <div class="metric-guide">
-                <h5>Blood Pressure (mmHg)</h5>
-                <ul>
-                    <li><span class="range-normal">Normal:</span> Below 120 / 80</li>
-                    <li><span class="range-elevated">Elevated:</span> 120-129 / Below 80</li>
-                    <li><span class="range-danger">Danger Zone:</span> Above 140 / 90</li>
-                </ul>
-            </div>
-            <div class="metric-guide">
-                <h5>Blood Sugar (mg/dL)</h5>
-                <ul>
-                    <li><span class="range-normal">Normal (Fasting):</span> 70 - 100</li>
-                    <li><span class="range-danger">Danger Zone:</span> Below 70 or Above 180</li>
-                </ul>
-            </div>
-            <div class="metric-guide">
-                <h5>Total Cholesterol (mg/dL)</h5>
-                <ul>
-                    <li><span class="range-normal">Normal:</span> Below 200</li>
-                    <li><span class="range-elevated">Borderline:</span> 200 - 239</li>
-                    <li><span class="range-danger">High:</span> 240 or Above</li>
-                </ul>
-            </div>
+    <h4>Health Metrics Reference Guide</h4>
+    <div class="guide-grid">
+        <div class="metric-guide">
+            <h5>Heart Rate (Resting)</h5>
+            <ul>
+                <li><span class="range-normal">Normal:</span> {{ $guidelines['hr_danger_low']->value }} - {{ $guidelines['hr_normal_high']->value }} bpm</li>
+                <li><span class="range-danger">Danger Zone:</span> Below {{ $guidelines['hr_danger_low']->value }} or Above {{ $guidelines['hr_normal_high']->value }} bpm</li>
+            </ul>
         </div>
-        <p class="disclaimer">*These are general guidelines for adults. Consult your doctor for personalized medical advice.</p>
+        <div class="metric-guide">
+            <h5>Blood Pressure (mmHg)</h5>
+            <ul>
+                <li><span class="range-normal">Normal:</span> Below {{ $guidelines['bp_normal_systolic']->value }} / {{ $guidelines['bp_normal_diastolic']->value }}</li>
+                <li><span class="range-elevated">Elevated:</span> {{ $guidelines['bp_normal_systolic']->value }}-{{ $guidelines['bp_elevated_systolic']->value }} / Below {{ $guidelines['bp_normal_diastolic']->value }}</li>
+                <li><span class="range-danger">Danger Zone:</span> Above {{ $guidelines['bp_danger_systolic']->value }} / {{ $guidelines['bp_danger_diastolic']->value }}</li>
+            </ul>
+        </div>
+        <div class="metric-guide">
+            <h5>Blood Sugar (mg/dL)</h5>
+            <ul>
+                <li><span class="range-normal">Normal (Fasting):</span> {{ $guidelines['sugar_danger_low']->value }} - {{ $guidelines['sugar_normal_high']->value }}</li>
+                <li><span class="range-danger">Danger Zone:</span> Below {{ $guidelines['sugar_danger_low']->value }} or Above {{ $guidelines['sugar_danger_high']->value }}</li>
+            </ul>
+        </div>
+        <div class="metric-guide">
+            <h5>Total Cholesterol (mg/dL)</h5>
+            <ul>
+                <li><span class="range-normal">Normal:</span> Below {{ $guidelines['cholesterol_normal']->value }}</li>
+                <li><span class="range-elevated">Borderline:</span> {{ $guidelines['cholesterol_normal']->value }} - {{ $guidelines['cholesterol_borderline']->value }}</li>
+                <li><span class="range-danger">High:</span> {{ $guidelines['cholesterol_high']->value }} or Above</li>
+            </ul>
+        </div>
     </div>
+    <p class="disclaimer">*These are general guidelines for adults. Consult your doctor for personalized medical advice.</p>
+</div>
 
     <div class="card">
         <form action="{{ route('patient.checkup.store') }}" method="POST">

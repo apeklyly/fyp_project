@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\HealthGuideline; 
+use Illuminate\Support\Facades\Cache;
 
 class HealthRecord extends Model
 {
@@ -20,31 +22,34 @@ class HealthRecord extends Model
      * 'good', 'intermediate', or 'danger'.
      */
     public function getVitalsStatus(): string
-    {
-        // DANGER conditions from the guide
-        if (
-            ($this->heart_rate !== null && ($this->heart_rate < 60 || $this->heart_rate > 100)) ||
-            ($this->systolic_pressure !== null && $this->systolic_pressure > 140) ||
-            ($this->diastolic_pressure !== null && $this->diastolic_pressure > 90) ||
-            ($this->blood_sugar_value !== null && ($this->blood_sugar_value < 70 || $this->blood_sugar_value > 180)) ||
-            ($this->cholesterol !== null && $this->cholesterol >= 240) ||
-            in_array('Chest Pain', json_decode($this->symptoms, true) ?? [])
-        ) {
-            return 'danger';
-        }
+{
+    // Get all guidelines from the cache (or database)
+    $guidelines = Cache::rememberForever('health_guidelines', function () {
+        return HealthGuideline::all()->keyBy('metric');
+    });
 
-        // INTERMEDIATE (Elevated/Borderline) conditions from the guide
-        if (
-            // Blood Pressure: Elevated
-            ($this->systolic_pressure !== null && $this->systolic_pressure >= 120) ||
-            ($this->diastolic_pressure !== null && $this->diastolic_pressure >= 80) ||
-            // Cholesterol: Borderline
-            ($this->cholesterol !== null && $this->cholesterol >= 200)
-        ) {
-            return 'intermediate';
-        }
-
-        // If none of the above, it's GOOD
-        return 'good';
+    // DANGER conditions from the database
+    if (
+        ($this->heart_rate !== null && ($this->heart_rate < $guidelines['hr_danger_low']->value || $this->heart_rate > $guidelines['hr_normal_high']->value)) ||
+        ($this->systolic_pressure !== null && $this->systolic_pressure > $guidelines['bp_danger_systolic']->value) ||
+        ($this->diastolic_pressure !== null && $this->diastolic_pressure > $guidelines['bp_danger_diastolic']->value) ||
+        ($this->blood_sugar_value !== null && ($this->blood_sugar_value < $guidelines['sugar_danger_low']->value || $this->blood_sugar_value > $guidelines['sugar_danger_high']->value)) ||
+        ($this->cholesterol !== null && $this->cholesterol >= $guidelines['cholesterol_high']->value) ||
+        in_array('Chest Pain', json_decode($this->symptoms, true) ?? [])
+    ) {
+        return 'danger';
     }
+
+    // INTERMEDIATE (Elevated/Borderline) conditions
+    if (
+        ($this->systolic_pressure !== null && $this->systolic_pressure >= $guidelines['bp_normal_systolic']->value) ||
+        ($this->diastolic_pressure !== null && $this->diastolic_pressure >= $guidelines['bp_normal_diastolic']->value) ||
+        ($this->cholesterol !== null && $this->cholesterol >= $guidelines['cholesterol_normal']->value)
+    ) {
+        return 'intermediate';
+    }
+
+    // If none of the above, it's GOOD
+    return 'good';
+}
 }

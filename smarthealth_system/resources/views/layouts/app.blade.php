@@ -24,11 +24,12 @@
 
             <nav class="sidebar-nav">
                 {{-- Universal Links --}}
-                <a href="{{ route('profile.show') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">My Profile</a>
+                
 
                 {{-- Patient Navigation --}}
                 @if(Auth::user()->role == 'patient')
                     <a href="{{ route('patient.dashboard') }}" class="{{ request()->routeIs('patient.dashboard') ? 'active' : '' }}">Dashboard</a>
+                    <a href="{{ route('profile.show') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">My Profile</a>
                     <a href="{{ route('patient.checkup.create') }}" class="{{ request()->routeIs('patient.checkup.create') ? 'active' : '' }}">New Medical Checkup</a>
                     <a href="{{ route('patient.records') }}" class="{{ request()->routeIs('patient.records') ? 'active' : '' }}">My Records</a>
                     <a href="{{ route('patient.appointments.index') }}" class="{{ request()->routeIs('patient.appointments.*') ? 'active' : '' }}">My Appointments</a>
@@ -52,6 +53,7 @@
                             <span class="notification-badge">{{ $unreadMessagesCount }}</span>
                         @endif
                     </a>
+                    <a href="{{ route('doctor.guidelines.edit') }}" class="{{ request()->routeIs('doctor.guidelines.*') ? 'active' : '' }}">System Guidelines</a>
                 @endif
                 
                 

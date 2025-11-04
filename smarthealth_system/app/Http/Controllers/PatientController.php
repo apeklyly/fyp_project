@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\Http;
 use App\Models\Appointment;
 use App\Models\Message;
+use App\Models\HealthGuideline;
 
 class PatientController extends Controller
 {
@@ -73,7 +74,9 @@ public function dashboard()
 
     public function createCheckup()
     {
-        return view('patient.checkup');
+        // Get all guidelines, keyed by their 'metric' for easy access
+    $guidelines = HealthGuideline::all()->keyBy('metric');
+    return view('patient.checkup', compact('guidelines'));
     }
 
     public function storeCheckup(Request $request)

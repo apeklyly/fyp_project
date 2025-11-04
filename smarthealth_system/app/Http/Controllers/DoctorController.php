@@ -8,6 +8,8 @@ use App\Models\HealthRecord;
 use App\Models\Appointment;
 use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
+use App\Models\HealthGuideline;
+use Illuminate\Support\Facades\Cache;
 
 class DoctorController extends Controller
 {
@@ -131,5 +133,39 @@ class DoctorController extends Controller
         return view('patient.record-show', compact('record'));
     }
 
+    public function editGuidelines()
+{
+    // Get all guidelines, keyed by their 'metric' for easy access
+    $guidelines = HealthGuideline::all()->keyBy('metric');
+    return view('doctor.guidelines', compact('guidelines'));
+}
+
+public function updateGuidelines(Request $request)
+{
+    // Validate all the incoming data
+    $validated = $request->validate([
+        'hr_danger_low' => 'required|integer',
+        'hr_normal_high' => 'required|integer',
+        'bp_normal_systolic' => 'required|integer',
+        'bp_normal_diastolic' => 'required|integer',
+        'bp_elevated_systolic' => 'required|integer',
+        'bp_danger_systolic' => 'required|integer',
+        'bp_danger_diastolic' => 'required|integer',
+        'sugar_danger_low' => 'required|integer',
+        'sugar_normal_high' => 'required|integer',
+        'sugar_danger_high' => 'required|integer',
+        'cholesterol_normal' => 'required|integer',
+        'cholesterol_borderline' => 'required|integer',
+        'cholesterol_high' => 'required|integer',
+    ]);
+
+    // Loop over the validated data and update the database
+    foreach ($validated as $metric => $value) {
+        HealthGuideline::where('metric', $metric)->update(['value' => $value]);
+    }
+    Cache::forget('health_guidelines');
+
+    return redirect()->route('doctor.guidelines.edit')->with('success', 'Health guidelines updated successfully!');
+}
 
 }
